@@ -1,0 +1,35 @@
+version: "3.8"
+
+services:
+  filebrowser:
+    image: filebrowser/filebrowser:v2.27.0
+    container_name: file.in
+    restart: unless-stopped
+    volumes:
+      - /fileserver:/srv  # All user data stored here
+      - filebrowser-config:/config  # Config in Docker volume (persistent)
+    environment:
+      # Performance Tuning
+      - FILEBROWSER_CACHE_DIR=/tmp/filebrowser_cache  # Faster file listings
+      - FILEBROWSER_DATABASE=/config/database.db  # DB in volume (persistent)
+
+      # System
+      - PUID=1000
+      - PGID=1000
+      - UMASK=022
+      - TZ=UTC  # Set your timezone (e.g., "America/New_York")
+
+    networks:
+      docker-pod: {}  # Attach to external pod network
+      net:
+        ipv4_address: 192.168.21.7  # Static IP on 'net' network
+
+volumes:
+  filebrowser-config:  # Stores config/database (persistent)
+
+networks:
+  docker-pod:
+    external: true  # Pre-existing pod network
+  net:
+    external: true
+    name: net  # Pre-existing network with static IP support
