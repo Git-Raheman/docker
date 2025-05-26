@@ -1,0 +1,17 @@
+version: "3"
+
+services:
+  adguard:
+    image: adguard/adguardhome
+    container_name: adguardhome
+    restart: unless-stopped
+    ports:
+      - "192.168.21.50:53:53/tcp"
+      - "192.168.21.50:53:53/udp"
+      - "192.168.21.50:3000:3000"    # Setup UI
+      - "192.168.21.50:82:80"      # Web UI after setup
+    volumes:
+      - ./adguard/work:/opt/adguardhome/work
+      - ./adguard/conf:/opt/adguardhome/conf
+    environment:
+      - TZ=UTC
