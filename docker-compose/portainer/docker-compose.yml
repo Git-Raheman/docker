@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: ct.org
+    restart: always
+    networks:
+      - docker-pod
+##   ports:
+#      - "8000:8000"
+#      - "9000:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer-data:/data
+
+volumes:
+  portainer-data:
+networks:
+  docker-pod:
+    external: true
