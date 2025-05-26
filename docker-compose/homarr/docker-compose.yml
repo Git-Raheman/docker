@@ -1,0 +1,27 @@
+#---------------------------------------------------------------------#
+#     Homarr - A simple, yet powerful dashboard for your server.      #
+#---------------------------------------------------------------------#
+services:
+  homarr:
+    container_name: pod-dash.in
+    image: ghcr.io/homarr-labs/homarr:latest
+    restart: unless-stopped
+    networks:
+      net:
+        ipv4_address: 192.168.21.5
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock # Optional, only if you want docker integration
+      - homarr:/app/data
+    environment:
+      - SECRET_ENCRYPTION_KEY=b8a0bb8fea9ef19fe9c66ba6e1614df2bcaf7bde47ad787541cec5f323bb7c60
+#    ports:
+#      - 'host(port):7575' <- this is container port to access
+
+networks:
+#  docker-pod:
+#    external: true
+  net:
+    external: true  # Make sure this MacVLAN network exists with correct settings
+
+volumes:
+  homarr:
