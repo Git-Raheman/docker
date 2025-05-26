@@ -1,0 +1,64 @@
+version: '3.7'  # Use at least version 3.5+ to support static IPs
+
+services:
+  docmost:
+    image: docmost/docmost:latest
+    container_name: alldocs.in
+    depends_on:
+      - db
+      - redis
+    environment:
+      APP_URL: 'http://alldocs.in:80'  <   enter your server or url ip
+      APP_SECRET: 'c468c020dadaabc9d2ad1cbc13527575f687c9be1f5ac970c59215d5b4b28016'
+      DATABASE_URL: 'postgresql://docmost:admin@db:5432/docmost?schema=public'
+      REDIS_URL: 'redis://redis:6379'
+      MAIL_DRIVER: smtp
+      SMTP_HOST: smtp.gmail.com
+      SMTP_PORT: 587
+      SMTP_USERNAME: >enter your mail address<
+      SMTP_PASSWORD: > enter your mail password <
+      SMTP_SECURE: tls
+      MAIL_FROM_ADDRESS: docs
+      MAIL_FROM_NAME: Docmost-Server
+#    ports:
+#      - "800:3000"
+    restart: unless-stopped
+    networks:
+      docker-pod: {}
+      net:
+        ipv4_address: 192.168.21.6
+    volumes:
+      - docmost:/app/data/storage
+
+  db:
+    image: postgres:16-alpine
+    container_name: docsmost.db
+    environment:
+      POSTGRES_DB: docmost
+      POSTGRES_USER: docmost
+      POSTGRES_PASSWORD: admin
+    restart: unless-stopped
+    networks:
+      - docker-pod
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7.2-alpine
+    container_name: docsmost.redis
+    restart: unless-stopped
+    networks:
+      - docker-pod
+    volumes:
+      - redis_data:/data
+
+networks:
+  docker-pod:
+    external: true
+  net:
+    external: true  # Make sure this MacVLAN network exists with correct settings
+
+volumes:
+  docmost:
+  db_data:
+  redis_data:
