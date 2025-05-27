@@ -1,0 +1,4 @@
+{
+    "data-root": "/docker/docker",     #<< this is location where docker store volume and all data like images , image layres , containers
+    "storage-driver": "overlay2"       #<< ajest your need 
+}
